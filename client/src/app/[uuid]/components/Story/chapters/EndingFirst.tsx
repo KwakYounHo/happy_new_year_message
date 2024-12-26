@@ -9,7 +9,7 @@ interface EndingFirstProps {
 
 export default function EndingFirst({ recipient }: EndingFirstProps) {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-4 min-h-[100vh]">
+    <div className="flex flex-col items-center justify-center h-full p-4 min-h-[100dvh] ">
       <div className="text-center space-y-8">
         <div className="space-y-2">
           <motion.p

@@ -10,7 +10,7 @@ interface EndingSecondProps {
 
 export default function EndingSecond({ recipient }: EndingSecondProps) {
   return (
-    <div className="relative flex flex-col items-center justify-center h-full p-4 min-h-[100vh]">
+    <div className="relative flex flex-col items-center justify-center h-full p-4 min-h-[100dvh] ">
       <motion.div
         initial={{ opacity: 0, clipPath: "circle(0% at 50% 50%)" }}
         animate={{ opacity: 0.075, clipPath: "circle(100% at 50% 50%)" }}

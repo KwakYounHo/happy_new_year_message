@@ -25,11 +25,9 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} h-full`}>
         <ThemeProvider>
-          <div className="flex items-center justify-center min-h-screen">
-            <main className="max-w-[600px] w-full min-h-[100vh] bg-background text-foreground flex flex-col items-center justify-center">
-              {children}
-            </main>
-          </div>
+          <main className="max-w-[600px] w-full h-[100dvh] bg-background text-foreground mx-auto">
+            {children}
+          </main>
         </ThemeProvider>
       </body>
     </html>

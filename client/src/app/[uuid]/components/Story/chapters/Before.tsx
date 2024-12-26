@@ -9,7 +9,7 @@ interface BeforeProps {
 
 export default function Before({ recipient }: BeforeProps) {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-4 min-h-[100vh]">
+    <div className="flex flex-col items-center justify-center h-full p-4 min-h-[100dvh] ">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

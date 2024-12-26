@@ -10,7 +10,7 @@ interface BeforeLetterProps {
 
 export default function BeforeLetter({ recipient }: BeforeLetterProps) {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-4 min-h-[100vh]">
+    <div className="flex flex-col items-center justify-center h-full p-4 min-h-[100dvh] ">
       <div className="text-center space-y-8">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}

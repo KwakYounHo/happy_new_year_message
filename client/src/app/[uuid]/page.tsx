@@ -8,7 +8,7 @@ import ErrorView from "./components/ErrorView";
 import { getBeforeRecipient, verifyRecipient } from "./actions";
 import type { BeforeRecipient, Recipient } from "../types/recipient";
 import Story from "./components/Story";
-import { RecipientError } from "./errors";
+import Image from "next/image";
 
 export default function RecipientPage({
   params,

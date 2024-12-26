@@ -182,7 +182,7 @@ export default function Letter({ recipient, onNext, onPrev }: LetterProps) {
   }, [recipient.song.youtube_id, shouldInitialize]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full p-4 min-h-[100vh]">
+    <div className="flex flex-col items-center justify-center h-[100dvh] p-4 overflow-hidden touch-none">
       <div className="w-full max-w-lg">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -274,11 +274,17 @@ export default function Letter({ recipient, onNext, onPrev }: LetterProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.7 }}
-            className="relative bg-background/95 backdrop-blur-sm rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-foreground/10 h-[75vh] z-20"
+            className="relative bg-background/95 backdrop-blur-sm rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-foreground/10 h-[75dvh] z-20 overflow-hidden"
           >
             <div
               ref={letterRef}
-              className="h-full overflow-y-auto pr-4 relative"
+              className="h-full overflow-y-auto overscroll-contain touch-pan-y pr-4 relative will-change-scroll"
+              style={{
+                WebkitOverflowScrolling: "touch",
+                touchAction: "pan-y",
+                WebkitTouchCallout: "none",
+                WebkitUserSelect: "none",
+              }}
             >
               <div className="prose prose-lg dark:prose-invert">
                 <ReactMarkdown>{recipient.letter}</ReactMarkdown>

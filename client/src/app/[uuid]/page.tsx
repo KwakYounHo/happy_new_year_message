@@ -75,7 +75,7 @@ export default function RecipientPage({
       <Gravatar email="kwakyh951@gmail.com" size={400} className="w-48 h-48" />
       <div className="text-center space-y-2">
         <h2 className="text-xl font-bold text-foreground">
-          <span className="text-2xl">{recipient.sub_name}</span>님
+          <span className="text-2xl">{recipient.sub_name}</span>님!
         </h2>
         <p className="text-lg text-foreground/80">
           정성스레 작성한 편지가 준비되어 있어요!

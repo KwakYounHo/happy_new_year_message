@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import ReactMarkdown from "react-markdown";
 import { useState, useRef, useEffect } from "react";
 import type { Recipient } from "@/app/types/recipient";
+import LetterModal from "./LetterModal";
 
 interface LetterProps {
   recipient: Recipient;
@@ -28,6 +28,11 @@ declare global {
             disablekb: number;
             loop: number;
             playlist: string;
+            playsinline?: number;
+            rel?: number;
+            showinfo?: number;
+            modestbranding?: number;
+            origin?: string;
           };
           events: {
             onReady: () => void;
@@ -51,11 +56,7 @@ export default function Letter({ recipient, onNext, onPrev }: LetterProps) {
   const [isReady, setIsReady] = useState(false);
   const playerRef = useRef<any>(null);
   const [shouldInitialize, setShouldInitialize] = useState(true);
-  const [showNextButton, setShowNextButton] = useState(false);
-  const letterRef = useRef<HTMLDivElement>(null);
-
-  // 기존의 YouTube 플레이어 초기화 및 제어 로직 복원
-  // ... (이전 Letter.tsx의 useEffect와 togglePlay 함수들)
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const togglePlay = () => {
     if (!isReady) return;
@@ -65,8 +66,18 @@ export default function Letter({ recipient, onNext, onPrev }: LetterProps) {
     } else {
       setIsLoading(true);
       try {
-        playerRef.current?.playVideo();
-        setTimeout(() => setIsLoading(false), 3000);
+        // 현재 상태를 확인하고 필요한 경우에만 cue 실행
+        const playerState = playerRef.current?.getPlayerState();
+        if (playerState === -1 || playerState === 5) {
+          // -1: unstarted, 5: video cued
+          playerRef.current?.loadVideoById({
+            videoId: recipient.song.youtube_id,
+            startSeconds: 0,
+          });
+        } else {
+          playerRef.current?.playVideo();
+        }
+        setTimeout(() => setIsLoading(false), 1000);
       } catch (error) {
         setIsLoading(false);
         console.error("Failed to play video:", error);
@@ -87,29 +98,7 @@ export default function Letter({ recipient, onNext, onPrev }: LetterProps) {
     };
   }, []);
 
-  // 크롤 감지하여 다음 버튼 표시 여부 결정
-  useEffect(() => {
-    const letterContainer = letterRef.current;
-    if (!letterContainer) return;
-
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = letterContainer;
-      // 스크롤이 거의 끝에 도달했을 때 (20px 여유)
-      if (scrollHeight - scrollTop - clientHeight < 20) {
-        setShowNextButton(true);
-      } else {
-        setShowNextButton(false);
-      }
-    };
-
-    letterContainer.addEventListener("scroll", handleScroll);
-    // 초기 체크
-    handleScroll();
-
-    return () => letterContainer.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // YouTube 플레이어 초기화 로직 추가
+  // YouTube 플레이어 초기화 로직
   useEffect(() => {
     if (!shouldInitialize) return;
 
@@ -131,12 +120,26 @@ export default function Letter({ recipient, onNext, onPrev }: LetterProps) {
           disablekb: 1,
           loop: 1,
           playlist: videoId,
+          playsinline: 1,
+          rel: 0,
+          showinfo: 0,
+          modestbranding: 1,
+          origin: window.location.origin, // 원본 도메인 설정
         },
         events: {
           onReady: () => {
             if (!cleanup) {
+              // 플레이어가 준비되면 동영상을 미리 큐에 로드
+              playerRef.current?.cueVideoById({
+                videoId: videoId,
+                startSeconds: 0,
+              });
               setIsReady(true);
               setIsLoading(false);
+              // 플레이어가 준비되면 반복 재생 설정
+              if (playerRef.current) {
+                playerRef.current.setLoop(true);
+              }
             }
           },
           onStateChange: (event: { data: number }) => {
@@ -145,6 +148,13 @@ export default function Letter({ recipient, onNext, onPrev }: LetterProps) {
               if (event.data === window.YT.PlayerState.PLAYING) {
                 setIsLoading(false);
               }
+              // 노래가 끝났을 때 다시 재생
+              if (event.data === window.YT.PlayerState.ENDED) {
+                if (playerRef.current) {
+                  playerRef.current.seekTo(0);
+                  playerRef.current.playVideo();
+                }
+              }
             }
           },
           onError: () => {
@@ -152,6 +162,14 @@ export default function Letter({ recipient, onNext, onPrev }: LetterProps) {
               setIsLoading(false);
               setIsReady(false);
               setShouldInitialize(true);
+              // 에러 발생 시 다시 초기화 시도
+              setTimeout(() => {
+                if (playerRef.current) {
+                  playerRef.current.destroy();
+                  playerRef.current = null;
+                  setShouldInitialize(true);
+                }
+              }, 1000);
             }
           },
         },
@@ -231,7 +249,7 @@ export default function Letter({ recipient, onNext, onPrev }: LetterProps) {
               </button>
             </div>
 
-            {/* 곡 정보 - 남은 공간 전체 사용 */}
+            {/* 곡 정보 */}
             <div className="flex-1 min-w-0">
               {/* 제목 */}
               <div className="overflow-hidden">
@@ -269,56 +287,64 @@ export default function Letter({ recipient, onNext, onPrev }: LetterProps) {
             </div>
           </motion.div>
 
-          {/* 편지 내용 */}
+          {/* 안내 문구 */}
+          {!isPlaying && isReady && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-sm text-foreground/60 text-center"
+            >
+              재생이 되지 않는다면 버튼을 한 번 더 눌러주세요
+            </motion.p>
+          )}
+
+          {/* 편지 열기 버튼 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.7 }}
-            className="relative bg-background/95 backdrop-blur-sm rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-foreground/10 h-[75dvh] z-20 overflow-hidden"
+            className="relative bg-background/95 backdrop-blur-sm rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-foreground/10 space-y-4"
           >
-            <div
-              ref={letterRef}
-              className="h-full overflow-y-auto overscroll-contain touch-pan-y pr-4 relative will-change-scroll"
-              style={{
-                WebkitOverflowScrolling: "touch",
-                touchAction: "pan-y",
-                WebkitTouchCallout: "none",
-                WebkitUserSelect: "none",
-              }}
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="w-full py-4 px-6 bg-foreground text-background hover:bg-foreground/90 rounded-lg transition-colors flex items-center justify-center space-x-2"
             >
-              <div className="prose prose-lg dark:prose-invert">
-                <ReactMarkdown>{recipient.letter}</ReactMarkdown>
-              </div>
-              <div className="h-32" />
-            </div>
+              <span className="material-icons">mail</span>
+              <span>편지 읽기</span>
+            </button>
 
-            {/* 이전/다음 페이지 버튼 */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: showNextButton ? 1 : 0 }}
-              transition={{ duration: 0.3 }}
-              className="absolute bottom-0 left-0 right-0 px-8 pb-8 bg-gradient-to-t from-background/95 to-transparent pt-16"
-            >
-              <div className="flex gap-3">
-                <button
-                  onClick={onPrev}
-                  className="flex-1 py-3 px-4 bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors flex items-center justify-center space-x-2"
-                >
-                  <span className="material-icons">arrow_left</span>
-                  <span className="text-foreground/80">이전 페이지</span>
-                </button>
-                <button
-                  onClick={onNext}
-                  className="flex-1 py-3 px-4 bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors flex items-center justify-center space-x-2"
-                >
-                  <span className="text-foreground/80">다음 페이지</span>
-                  <span className="material-icons">arrow_right</span>
-                </button>
-              </div>
-            </motion.div>
+            <div className="flex gap-3">
+              <button
+                onClick={onPrev}
+                className="flex-1 py-3 px-4 bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors flex items-center justify-center space-x-2"
+              >
+                <span className="material-icons">arrow_left</span>
+                <span>이전 페이지</span>
+              </button>
+              <button
+                onClick={onNext}
+                className="flex-1 py-3 px-4 bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors flex items-center justify-center space-x-2"
+              >
+                <span>다음 페이지</span>
+                <span className="material-icons">arrow_right</span>
+              </button>
+            </div>
           </motion.div>
         </motion.div>
       </div>
+
+      {/* 편지 모달 */}
+      <LetterModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        recipient={recipient}
+        onNext={onNext}
+        onPrev={onPrev}
+        sub_name={recipient.sub_name}
+        name={recipient.name}
+      />
+
       {/* YouTube 플레이어 (숨김) */}
       <div id="youtube-player" className="hidden" />
     </div>

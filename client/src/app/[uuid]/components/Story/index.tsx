@@ -12,6 +12,7 @@ import Letter from "./chapters/Letter";
 import EndingFirst from "./chapters/EndingFirst";
 import EndingSecond from "./chapters/EndingSecond";
 import BeforeBeforeLetter from "./chapters/BeforeBeforeLetter";
+import InterfaceGuide from "./chapters/InterfaceGuide";
 
 interface StoryProps {
   recipient: Recipient;
@@ -19,61 +20,6 @@ interface StoryProps {
 
 export default function Story({ recipient }: StoryProps) {
   const [currentChapter, setCurrentChapter] = useState(0);
-
-  const chapters = [
-    { id: 0, title: "시작 인사", component: <Intro recipient={recipient} /> },
-    {
-      id: 1,
-      title: "시작하기 앞서",
-      component: <Before recipient={recipient} />,
-    },
-    {
-      id: 2,
-      title: "2024년의 당신",
-      component: <Decoration recipient={recipient} />,
-    },
-    {
-      id: 3,
-      title: "당신을 기억하는 키워드",
-      component: <Keywords recipient={recipient} />,
-    },
-    {
-      id: 4,
-      title: "기억에 남는 달",
-      component: <Month recipient={recipient} />,
-    },
-    {
-      id: 5,
-      title: "편지 준비",
-      component: <BeforeBeforeLetter recipient={recipient} />,
-    },
-    {
-      id: 6,
-      title: "편지 읽기 전",
-      component: <BeforeLetter recipient={recipient} />,
-    },
-    {
-      id: 7,
-      title: "편지",
-      component: (
-        <Letter
-          recipient={recipient}
-          onNext={() => setCurrentChapter((prev) => prev + 1)}
-          onPrev={() => setCurrentChapter((prev) => prev - 1)}
-        />
-      ),
-    },
-    {
-      id: 8,
-      title: "마무리 인사",
-      component: <EndingFirst recipient={recipient} />,
-    },
-    {
-      id: 9,
-      title: "마무리 인사",
-      component: <EndingSecond recipient={recipient} />,
-    },
-  ];
 
   const handleNext = () => {
     if (currentChapter < chapters.length - 1) {
@@ -91,6 +37,72 @@ export default function Story({ recipient }: StoryProps) {
   const isLetterChapter = (chapterId: number) => {
     return chapters[chapterId]?.title === "편지";
   };
+
+  const chapters = [
+    {
+      id: 0,
+      title: "인터페이스 안내",
+      component: (
+        <InterfaceGuide
+          recipient={recipient}
+          onNext={handleNext}
+          onPrev={handlePrev}
+        />
+      ),
+    },
+    { id: 1, title: "시작 인사", component: <Intro recipient={recipient} /> },
+    {
+      id: 2,
+      title: "시작하기 앞서",
+      component: <Before recipient={recipient} />,
+    },
+    {
+      id: 3,
+      title: "2024년의 당신",
+      component: <Decoration recipient={recipient} />,
+    },
+    {
+      id: 4,
+      title: "당신을 기억하는 키워드",
+      component: <Keywords recipient={recipient} />,
+    },
+    {
+      id: 5,
+      title: "기억에 남는 달",
+      component: <Month recipient={recipient} />,
+    },
+    {
+      id: 6,
+      title: "편지 준비",
+      component: <BeforeBeforeLetter recipient={recipient} />,
+    },
+    {
+      id: 7,
+      title: "편지 읽기 전",
+      component: <BeforeLetter recipient={recipient} />,
+    },
+    {
+      id: 8,
+      title: "편지",
+      component: (
+        <Letter
+          recipient={recipient}
+          onNext={() => setCurrentChapter((prev) => prev + 1)}
+          onPrev={() => setCurrentChapter((prev) => prev - 1)}
+        />
+      ),
+    },
+    {
+      id: 9,
+      title: "마무리 인사",
+      component: <EndingFirst recipient={recipient} />,
+    },
+    {
+      id: 10,
+      title: "마무리 인사",
+      component: <EndingSecond recipient={recipient} />,
+    },
+  ];
 
   return (
     <div className="relative w-full h-full">

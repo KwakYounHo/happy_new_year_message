@@ -23,7 +23,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={`${inter.className} h-full`}>
+      <body
+        className={`${inter.className} h-full max-w-[600px] mx-auto md:shadow-[0_0_30px_rgba(0,0,0,0.1)]`}
+      >
         <ThemeProvider>
           <main className="max-w-[600px] w-full h-[100dvh] bg-background text-foreground mx-auto">
             {children}

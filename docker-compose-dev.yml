@@ -1,0 +1,49 @@
+services:
+  message-client:
+    build:
+      context: ./client
+      dockerfile: dockerfile.dev
+    ports:
+      - 3343:3343
+    volumes:
+      - ./client:/app
+    networks:
+      - yunhodev_app-dev
+    env_file:
+      - .env
+  message-db:
+    build:
+      context: ./db
+      dockerfile: dockerfile.dev
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5888:5888"
+    env_file:
+      - .env
+    networks:
+      - yunhodev_app-dev
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -p 5888"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  message-api:
+    build:
+      context: ./api
+      dockerfile: dockerfile.dev
+    volumes:
+      - ./api:/app
+    env_file:
+      - .env
+    networks:
+      - yunhodev_app-dev
+    ports:
+      - 8008:8008
+    depends_on:
+      message-db:
+        condition: service_healthy
+
+networks:
+  yunhodev_app-dev:
+    external: true

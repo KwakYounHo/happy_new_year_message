@@ -1,0 +1,24 @@
+FROM python:3.12-alpine
+
+ENV TZ=Asia/Seoul
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN apk add --no-cache postgresql-libs && \
+  apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev && \
+  pip install -r requirements.txt && \
+  apk --purge del .build-deps
+
+COPY . .
+
+RUN addgroup -S python && \
+  adduser -S fastapi && \
+  chown -R fastapi:python /app
+
+USER fastapi
+
+EXPOSE 8008
+
+CMD ["python", "main.py"]

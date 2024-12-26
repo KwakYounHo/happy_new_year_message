@@ -1,0 +1,7 @@
+FROM postgres:15-alpine
+
+ENV TZ=Asia/Seoul
+
+COPY ./init/*.sql /docker-entrypoint-initdb.d/
+
+EXPOSE 5888

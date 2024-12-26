@@ -8,6 +8,7 @@ import type { Recipient } from "@/app/types/recipient";
 interface LetterProps {
   recipient: Recipient;
   onNext: () => void;
+  onPrev: () => void;
 }
 
 // YouTube Player 타입 정의
@@ -44,7 +45,7 @@ declare global {
   }
 }
 
-export default function Letter({ recipient, onNext }: LetterProps) {
+export default function Letter({ recipient, onNext, onPrev }: LetterProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -194,9 +195,10 @@ export default function Letter({ recipient, onNext }: LetterProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
-            className="bg-background/80 backdrop-blur-sm rounded-lg p-4 shadow-sm border border-foreground/10 flex items-center justify-between relative z-[5]"
+            className="bg-background/80 backdrop-blur-sm rounded-lg p-4 shadow-sm border border-foreground/10 flex items-center relative z-[5]"
           >
-            <div className="flex items-center space-x-3">
+            {/* 재생 버튼 */}
+            <div className="flex-shrink-0 mr-4">
               <button
                 onClick={togglePlay}
                 disabled={isLoading || !isReady}
@@ -227,9 +229,42 @@ export default function Letter({ recipient, onNext }: LetterProps) {
                   <span className="material-icons">play_arrow</span>
                 )}
               </button>
-              <div className="text-sm">
-                <p className="font-medium">{recipient.song.title}</p>
-                <p className="text-foreground/60">{recipient.song.artist}</p>
+            </div>
+
+            {/* 곡 정보 - 남은 공간 전체 사용 */}
+            <div className="flex-1 min-w-0">
+              {/* 제목 */}
+              <div className="overflow-hidden">
+                {recipient.song.title.length > 20 ? (
+                  <div className="relative w-full">
+                    <div className="whitespace-nowrap inline-flex">
+                      <span className="animate-marquee font-medium">
+                        {recipient.song.title}&nbsp;&nbsp;&nbsp;&nbsp;
+                        {recipient.song.title}&nbsp;&nbsp;&nbsp;&nbsp;
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="font-medium truncate">{recipient.song.title}</p>
+                )}
+              </div>
+
+              {/* 아티스트 */}
+              <div className="overflow-hidden">
+                {recipient.song.artist.length > 20 ? (
+                  <div className="relative w-full">
+                    <div className="whitespace-nowrap inline-flex">
+                      <span className="animate-marquee text-foreground/60">
+                        {recipient.song.artist}&nbsp;&nbsp;&nbsp;&nbsp;
+                        {recipient.song.artist}&nbsp;&nbsp;&nbsp;&nbsp;
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-foreground/60 truncate">
+                    {recipient.song.artist}
+                  </p>
+                )}
               </div>
             </div>
           </motion.div>
@@ -251,20 +286,29 @@ export default function Letter({ recipient, onNext }: LetterProps) {
               <div className="h-32" />
             </div>
 
-            {/* 다음 페이지 버튼 */}
+            {/* 이전/다음 페이지 버튼 */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: showNextButton ? 1 : 0 }}
               transition={{ duration: 0.3 }}
               className="absolute bottom-0 left-0 right-0 px-8 pb-8 bg-gradient-to-t from-background/95 to-transparent pt-16"
             >
-              <button
-                onClick={onNext}
-                className="w-full py-3 px-6 bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors flex items-center justify-center space-x-2"
-              >
-                <span className="text-foreground/80">다음 페이지로...</span>
-                <span className="material-icons">arrow_right</span>
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={onPrev}
+                  className="flex-1 py-3 px-4 bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors flex items-center justify-center space-x-2"
+                >
+                  <span className="material-icons">arrow_left</span>
+                  <span className="text-foreground/80">이전 페이지</span>
+                </button>
+                <button
+                  onClick={onNext}
+                  className="flex-1 py-3 px-4 bg-foreground/10 hover:bg-foreground/20 rounded-lg transition-colors flex items-center justify-center space-x-2"
+                >
+                  <span className="text-foreground/80">다음 페이지</span>
+                  <span className="material-icons">arrow_right</span>
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         </motion.div>

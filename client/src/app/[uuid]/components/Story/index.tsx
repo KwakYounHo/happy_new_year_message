@@ -59,6 +59,7 @@ export default function Story({ recipient }: StoryProps) {
         <Letter
           recipient={recipient}
           onNext={() => setCurrentChapter((prev) => prev + 1)}
+          onPrev={() => setCurrentChapter((prev) => prev - 1)}
         />
       ),
     },
@@ -86,6 +87,11 @@ export default function Story({ recipient }: StoryProps) {
     }
   };
 
+  // Letter 컴포넌트인지 확인하는 함수
+  const isLetterChapter = (chapterId: number) => {
+    return chapters[chapterId]?.title === "편지";
+  };
+
   return (
     <div className="relative w-full h-full">
       {/* 스토리 진행 상태 표시 */}
@@ -111,22 +117,24 @@ export default function Story({ recipient }: StoryProps) {
         )}
       </div>
 
-      {/* 네비게이션 영역 */}
-      <div className="absolute inset-0 flex items-center justify-between">
-        <button
-          onClick={handlePrev}
-          className="w-1/3 h-full opacity-0"
-          disabled={currentChapter === 0}
-          aria-label="이전 페이지"
-        />
-        <div className="w-1/3 h-full" />
-        <button
-          onClick={handleNext}
-          className="w-1/3 h-full opacity-0"
-          disabled={currentChapter === chapters.length - 1}
-          aria-label="다음 페이지"
-        />
-      </div>
+      {/* 네비게이션 영역 - Letter 컴포넌트일 때는 숨김 */}
+      {!isLetterChapter(currentChapter) && (
+        <div className="absolute inset-0 flex items-center justify-between">
+          <button
+            onClick={handlePrev}
+            className="w-1/3 h-full opacity-0"
+            disabled={currentChapter === 0}
+            aria-label="이전 페이지"
+          />
+          <div className="w-1/3 h-full" />
+          <button
+            onClick={handleNext}
+            className="w-1/3 h-full opacity-0"
+            disabled={currentChapter === chapters.length - 1}
+            aria-label="다음 페이지"
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,14 +1,16 @@
 services:
   message-client:
-    image: ${GHCR_IMAGE_URL}/client:latest
+    image: ${GHCR_IMAGE_URL}/client:2024-2025
     networks:
+      - proxy
       - message-app
     environment:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
       - PORT=${PORT}
+      - HOSTNAME=${HOSTNAME}
 
   message-api:
-    image: ${GHCR_IMAGE_URL}/api:latest
+    image: ${GHCR_IMAGE_URL}/api:2024-2025
     networks:
       - message-app
     environment:
@@ -22,7 +24,7 @@ services:
         condition: service_healthy
 
   message-db:
-    image: ${GHCR_IMAGE_URL}/db:latest
+    image: ${GHCR_IMAGE_URL}/db:2024-2025
     networks:
       - message-app
     environment:

@@ -1,15 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { Recipient } from "@/app/types/recipient";
 
-interface BeforeBeforeLetterProps {
-  recipient: Recipient;
-}
-
-export default function BeforeBeforeLetter({
-  recipient,
-}: BeforeBeforeLetterProps) {
+export default function BeforeBeforeLetter() {
   return (
     <div className="flex flex-col items-center justify-center h-full p-4 min-h-[100dvh] ">
       <div className="text-center space-y-8">

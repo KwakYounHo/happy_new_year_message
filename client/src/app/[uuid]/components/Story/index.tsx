@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import type { Recipient } from "@/app/types/recipient";
 import Intro from "./chapters/Intro";
 import Before from "./chapters/Before";
@@ -42,13 +42,7 @@ export default function Story({ recipient }: StoryProps) {
     {
       id: 0,
       title: "인터페이스 안내",
-      component: (
-        <InterfaceGuide
-          recipient={recipient}
-          onNext={handleNext}
-          onPrev={handlePrev}
-        />
-      ),
+      component: <InterfaceGuide recipient={recipient} onNext={handleNext} />,
     },
     { id: 1, title: "시작 인사", component: <Intro recipient={recipient} /> },
     {
@@ -74,7 +68,7 @@ export default function Story({ recipient }: StoryProps) {
     {
       id: 6,
       title: "편지 준비",
-      component: <BeforeBeforeLetter recipient={recipient} />,
+      component: <BeforeBeforeLetter />,
     },
     {
       id: 7,

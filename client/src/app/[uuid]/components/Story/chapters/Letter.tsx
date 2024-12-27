@@ -12,6 +12,21 @@ interface LetterProps {
 }
 
 // YouTube Player 타입 정의
+interface YouTubePlayer {
+  destroy: () => void;
+  playVideo: () => void;
+  pauseVideo: () => void;
+  seekTo: (seconds: number) => void;
+  getPlayerState: () => number;
+  cueVideoById: (
+    videoId: string | { videoId: string; startSeconds?: number }
+  ) => void;
+  loadVideoById: (
+    videoId: string | { videoId: string; startSeconds?: number }
+  ) => void;
+  setLoop: (loop: boolean) => void;
+}
+
 declare global {
   interface Window {
     onYouTubeIframeAPIReady: () => void;
@@ -19,8 +34,8 @@ declare global {
       Player: new (
         elementId: string,
         config: {
-          height: string;
-          width: string;
+          height: string | number;
+          width: string | number;
           videoId: string;
           playerVars: {
             autoplay: number;
@@ -40,7 +55,7 @@ declare global {
             onError: () => void;
           };
         }
-      ) => any;
+      ) => YouTubePlayer;
       PlayerState: {
         PLAYING: number;
         PAUSED: number;
@@ -54,7 +69,7 @@ export default function Letter({ recipient, onNext, onPrev }: LetterProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isReady, setIsReady] = useState(false);
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<YouTubePlayer | null>(null);
   const [shouldInitialize, setShouldInitialize] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

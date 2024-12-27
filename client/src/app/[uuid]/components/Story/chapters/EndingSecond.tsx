@@ -12,20 +12,15 @@ export default function EndingSecond({ recipient }: EndingSecondProps) {
   return (
     <div className="relative flex flex-col items-center justify-center h-full p-4 min-h-[100dvh] ">
       <motion.div
-        initial={{ opacity: 0, clipPath: "circle(0% at 50% 50%)" }}
-        animate={{ opacity: 0.075, clipPath: "circle(100% at 50% 50%)" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.075 }}
         transition={{
           duration: 7,
-          opacity: { duration: 7 },
-          clipPath: {
-            duration: 7,
-            ease: "easeOut",
-          },
         }}
         className="absolute inset-0 z-0"
       >
         <Image
-          src="/happy_new_year.png"
+          src="https://yunhodev.s3.ap-northeast-2.amazonaws.com/public/happy_new_year.png"
           alt="새해 복 많이 받으세요"
           fill
           className="object-cover"

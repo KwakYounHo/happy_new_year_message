@@ -8,7 +8,7 @@ services:
     volumes:
       - ./client:/app
     networks:
-      - yunhodev_app-dev
+      - message-app-dev
     env_file:
       - .env
   message-db:
@@ -17,12 +17,10 @@ services:
       dockerfile: dockerfile.dev
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d
-    ports:
-      - "5888:5888"
     env_file:
       - .env
     networks:
-      - yunhodev_app-dev
+      - message-app-dev
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -p 5888"]
       interval: 5s
@@ -37,13 +35,10 @@ services:
     env_file:
       - .env
     networks:
-      - yunhodev_app-dev
-    ports:
-      - 8008:8008
+      - message-app-dev
     depends_on:
       message-db:
         condition: service_healthy
 
 networks:
-  yunhodev_app-dev:
-    external: true
+  message-app-dev:

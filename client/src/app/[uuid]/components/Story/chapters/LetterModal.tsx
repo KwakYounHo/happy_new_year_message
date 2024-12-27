@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { Recipient } from "@/app/types/recipient";
+import { motion } from "framer-motion";
 
 interface LetterModalProps {
   isOpen: boolean;
@@ -58,9 +59,16 @@ export default function LetterModal({
       onClick={handleBackdropClick}
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
     >
-      <div
+      <motion.div
         ref={modalRef}
-        className="bg-background rounded-2xl w-full max-w-2xl max-h-[90vh] shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden flex flex-col"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{
+          duration: 1.5,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+        className="w-full max-w-2xl max-h-[85vh] bg-background rounded-2xl shadow-xl z-50 flex flex-col"
       >
         {/* 모달 헤더 */}
         <div className="p-4 border-b border-foreground/10 flex justify-between items-center">
@@ -102,7 +110,7 @@ export default function LetterModal({
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 

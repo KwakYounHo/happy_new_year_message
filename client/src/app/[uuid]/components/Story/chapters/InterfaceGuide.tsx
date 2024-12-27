@@ -6,13 +6,11 @@ import type { Recipient } from "@/app/types/recipient";
 interface InterfaceGuideProps {
   recipient: Recipient;
   onNext: () => void;
-  onPrev: () => void;
 }
 
 export default function InterfaceGuide({
   recipient,
   onNext,
-  onPrev,
 }: InterfaceGuideProps) {
   return (
     <div className="h-[100dvh] flex flex-col items-center justify-center relative p-4">

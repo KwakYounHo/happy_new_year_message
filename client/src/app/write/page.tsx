@@ -55,6 +55,7 @@ export default function WritePage() {
         router.push(`/${result.data.id}`);
       }
     } catch (error) {
+      console.error(error);
       setError("예기치 못한 오류가 발생했습니다.");
     } finally {
       setIsSubmitting(false);
@@ -83,7 +84,7 @@ export default function WritePage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-[100dvh] p-4">
+    <div className="flex flex-col items-center justify-center h-[100dvh] p-4 overflow-y-auto">
       <div className="w-full max-w-2xl space-y-8">
         <h1 className="text-2xl font-bold text-center text-foreground">
           새로운 편지 작성하기

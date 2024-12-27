@@ -22,7 +22,7 @@ services:
     networks:
       - message-app-dev
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -p 5888"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -p ${PGPORT} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5

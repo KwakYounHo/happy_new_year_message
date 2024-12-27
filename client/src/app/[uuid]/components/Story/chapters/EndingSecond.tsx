@@ -29,7 +29,7 @@ export default function EndingSecond({ recipient }: EndingSecondProps) {
         />
       </motion.div>
 
-      <div className="relative z-10 text-center space-y-8">
+      <div className="relative text-center space-y-8">
         <div className="space-y-2">
           <motion.p
             initial={{ opacity: 0, y: 20 }}

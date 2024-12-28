@@ -74,7 +74,7 @@ export default async function dynamicImageGenerate({ params }: Props) {
             style={{
               margin: "0",
               padding: "0",
-              fontSize: "25px",
+              fontSize: "30px",
               fontWeight: "400",
               letterSpacing: "-1px",
             }}
@@ -85,7 +85,7 @@ export default async function dynamicImageGenerate({ params }: Props) {
             style={{
               margin: "0",
               padding: "0",
-              fontSize: "25px",
+              fontSize: "30px",
               fontWeight: "400",
               letterSpacing: "-1px",
             }}

@@ -9,6 +9,7 @@ export const generateMetadata = async ({
 }): Promise<Metadata> => {
   const data = await getBeforeRecipient(params.uuid);
   return {
+    metadataBase: new URL("https://annual.yunho.dev"),
     title: `${data.data?.sub_name}님께 드리는 2024년 감사의 편지`,
     description: `${data.data?.sub_name}님을 위해 준비한 편지`,
     openGraph: {

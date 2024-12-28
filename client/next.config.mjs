@@ -23,6 +23,11 @@ const nextConfig = {
         hostname: "yunhodev.s3.ap-northeast-2.amazonaws.com",
         pathname: "/public/**",
       },
+      {
+        protocol: "https",
+        hostname: "image.bugsm.co.kr",
+        pathname: "/album/images/**",
+      },
     ],
   },
 };
